@@ -375,7 +375,7 @@ def create_configuration_files_for_landmark(lm_id, lm_name, fold_indices, res,
         fid_train.write( '  bsub -n 4 -M 16 -R "span[hosts=1]" -q day '
                    '-e %s/err_%s_%d_seed_$i.txt -o %s/out_%s_%d_seed_$i.txt '
                    'ContextLandmarkTrain --file %s/landmark_%s_R%d.ini '
-                   '--type ushort --seed $i\n' % (target_dir_name, lm_id, scale, 
+                   '--type short --seed $i\n' % (target_dir_name, lm_id, scale, 
                        target_dir_name, lm_id, scale, ini_dir, lm_id, scale ))
 
         fid_train.write( 'done\n\n' )
