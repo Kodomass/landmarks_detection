@@ -4,14 +4,19 @@ import os
 
 def main():
 
-    data_dir = '/Users/Abzhan/992/test_data/nrrd_sample'
+    data_dir = '.../test_data/nrrd_sample'
 
-    testing_data_dir = '/Users/Abzhan/992/test_data/Centerline_Data'
+    testing_data_dir = '.../test_data/Centerline_Data'
 
-    ds_index_pattern = re.compile("[0-9]{4}")
-    d = ( f for f in os.listdir(testing_data_dir) if ds_index_pattern.match(f) )
+    # ds_index_pattern = re.compile("[0-9]{4}")
+    # d = ( f for f in os.listdir(testing_data_dir) if ds_index_pattern.match(f) )
 
-    testing_set_indices = [f[:4] for f in d]
+    # testing_set_indices = [f[:4] for f in d]
+
+    # alternative test indices initialization
+    testing_indices_file = 'test_indices.txt'
+    fid = open(testing_indices_file)
+    testing_set_indices = [ f[:4] for f in fid.readlines() ]
 
     print(len(testing_set_indices),
             'Testing dataset indices: ', testing_set_indices)
@@ -38,10 +43,10 @@ def main():
     print('Done!')
 
 
-def create_config_files(lm_id, lm_name, res, 
+def create_config_files(lm_id, lm_name, res,
                         target_dir_name, data_dir,exs_TC,
                         testing_set_indices):
- 
+
     if not os.path.exists(target_dir_name):
             os.makedirs(target_dir_name)
 
@@ -87,16 +92,16 @@ def create_config_files(lm_id, lm_name, res,
                 # make sure that if we are looking at the trachea carina,
                 # it actually exists in the dataset
                 if not 'TracheaCarina' == lm_name or TC_exists:
- 
+
                     # check if the current id should be
                     # in the training or testing set
- 
+
                     if not c_name in testing_set_indices:
 
                         fid.write('%s/%s_INPUT.nrrd\n' % (data_dir, c_name ))
-                        fid.write('Annotator\t %s\t -1\t -1\t -1\t %f\t %f\t %f\n' % 
+                        fid.write('Annotator\t %s\t -1\t -1\t -1\t %f\t %f\t %f\n' %
                             (lm_id, -rec['x'], -rec['y'],rec['z'] ))
- 
+
                     else: # must be testing
 
                         bsub_command = ('bsub -M 16 -R "span[hosts=1]" -q day  '
@@ -104,25 +109,25 @@ def create_config_files(lm_id, lm_name, res,
                             '-o %s/testResults/out_test_%s_%s.txt' %
                             (target_dir_name, lm_name, c_name,
                              target_dir_name, lm_name, c_name ))
- 
+
                         test_command = ('%s ContextLandmarkDetection --lm '
                             '--vote --image %s --root %s --names %s --level 0 '
                             '--maxscale 3 --minscale 1 '
                             '--out %s/testResults/out_%s_%s.txt' %
                             (bsub_command, image_path, root_folder, lm_id,
                              target_dir_name, lm_name, c_name ))
- 
+
                         fid_tst.write('%s\n' % test_command )
- 
+
     fid_tst.close()
     fid.close()
- 
+
     # create ini files
     scales = [1, 2, 3]
     spacings = [1, 2, 4]
     box_radii = [15, 30, 300]
     training_sample_numbers_per_radius = [400, 200, 150]
- 
+
     for i in range(3):
         m.write_ini_file( lm_id, lm_file_name, ini_dir,
                         detectors_dir, scales[i], spacings[i],
@@ -148,7 +153,7 @@ def create_config_files(lm_id, lm_name, res,
         fid_train.write( 'done\n\n' )
 
     fid_train.close()
- 
+
 # end create_config_files
 
 if __name__ == "__main__":
