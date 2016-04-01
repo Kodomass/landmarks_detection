@@ -27,7 +27,8 @@ def main():
             if not os.path.exists(target_dir_name):
                 os.makedirs(target_dir_name)
 
-            write_id_to_name_file( ('%s/names' % target_dir_name ), ids, all_landmark_names )
+            write_id_to_name_file( ('%s/names' % target_dir_name ), 
+                                    ids, all_landmark_names )
 
             create_configuration_files_for_landmark(ids[i], lmk_name,
                 folds_indices[f], res, target_dir_name, data_dir, exs_TC, f)
