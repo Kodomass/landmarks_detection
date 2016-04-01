@@ -4,7 +4,7 @@ import numpy as np
 
 def main():
 
-    data_dir = '/Users/Abzhan/992/test_data/nrrd_sample'
+    data_dir = ''
 
     (res, landmarks_count_map, exs_TC) = read_all_landmark_data(data_dir)
 
