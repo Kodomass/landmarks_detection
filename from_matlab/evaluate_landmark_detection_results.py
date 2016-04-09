@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 def evaluate_landmark_detection_results():
 
-    data_dir = ''
+    data_dir = '~/992/test_data/nrrd_sample'
     evaluate_test_train = False
 
     (res, count_map, exs_tc) = m.read_all_landmark_data(data_dir)
